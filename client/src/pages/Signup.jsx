@@ -1,14 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     name: '',
     email: '',
     password: '',
   })
 
-  const signupUser = (e) => {
-    e.preventDefault()
+  const signupUser = async (e) => {
+    e.preventDefault();
+    const {name, email, password} = data
+    try {
+      const {data} = await axios.post('/signup', {
+        name, email, password
+      })
+      if(data.error) {
+        toast.error(data.error)
+      } else {
+        setData({})
+        toast.success('Welcome! Login Successfully')
+        navigate('/login')
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
